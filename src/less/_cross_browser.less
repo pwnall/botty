@@ -1,0 +1,20 @@
+.box-sizing(@sizing) {
+  -moz-box-sizing: @sizing;
+  box-sizing: @sizing;
+}
+
+.transition(@time: 0.5s, @property: all, @function: ease-in-out) {
+  -webkit-transition: @property @time @function;
+  -moz-transition: @property @time @function;
+  transition: @property @time @function;
+}
+
+.linear-gradient(@flat-color, @top-color, @bottom-color) {
+  background-color: @flat-color;
+  -ms-filter: ~"progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='@{top-color}', endColorstr='@{botton-color}')";
+  background-image: -webkit-linear-gradient(top, @top-color 0%,
+                                                 @bottom-color 100%);
+  background-image: linear-gradient(top, @top-color 0%, @bottom-color 100%);
+}
+
+

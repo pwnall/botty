@@ -1,0 +1,44 @@
+{
+  "name": "botty",
+  "version": "0.1",
+  "manifest_version": 2,
+  "description": "Personal Computer Management",
+  "icons": {
+    "16": "images/icon16.png",
+    "48": "images/icon48.png",
+    "128": "images/icon128.png"
+  },
+  "browser_action": {
+    "default_icon": {
+      "19": "images/icon19.png",
+      "38": "images/icon38.png"
+    },
+    "default_title": "Starting..."
+  },
+  "minimum_chrome_version": "24",
+  "background": {
+    "persistent": true,
+    "scripts": [
+      "vendor/js/dropbox.js",
+      "vendor/js/async.js",
+      "js/dropbox_chrome.js",
+      "js/host_info.js",
+      "js/locals.js",
+      "js/nexus.js",
+      "js/rtc.js",
+      "js/background.js"
+    ]
+  },
+  "permissions": [
+    "background",
+    "geolocation",
+    "idle",
+    "notifications",
+    "storage",
+    "unlimitedStorage",
+    "audioCapture",
+    "videoCapture"
+  ],
+  "content_security_policy":
+    "script-src 'self' 'unsafe-eval'; object-src 'self'"
+}
