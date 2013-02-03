@@ -94,7 +94,8 @@ class HostsView
   # Updates the DOM for a host entry to reflect the video stream's state.
   updateVideoDom: ($videoDom, video) ->
     $('.video-host-name', $hostDom).text video.hostId
-    $('video', $hostDom)[0].src = window.URL.createObjectUrl video.stream
+    $('.video-host-name', $hostDom).text window.URL.createObjectUrl video.stream
+    # $('video', $hostDom)[0].src = window.URL.createObjectUrl video.stream
 
   onMessage: (message) ->
     switch message.notice

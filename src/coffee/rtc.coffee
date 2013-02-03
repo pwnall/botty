@@ -1,5 +1,7 @@
 # Controller for one RTC connection.
 class Rtc
+  @onAvcStart: new Dropbox.EventSource
+
   # @param {Nexus} nexus
   # @param {HostInfo} hostInfo
   constructor: (@nexus) ->
@@ -30,14 +32,14 @@ class Rtc
 
   # Called when the user clicks on the video button for a host.
   #
-  # @param {String} calledHostId
+  # @param {String} calleeHostId
   # @param {String} hostId
-  callHost: (calledHostId, hostId) ->
+  callHost: (calleeHostId, hostId) ->
     return if @calling or @answering
 
     @calling = true
     @callerHostId = hostId
-    @calleeHostId = calledHostId
+    @calleeHostId = calleeHostId
     @rtcConnect()
 
   # Called when the user clicks on the close video button for a host.
@@ -75,15 +77,23 @@ class Rtc
 
   # Prompts the user for permission to use the A/V inputs.
   avInput: ->
+    listener = (tabWindow) =>
+      Rtc.onAvcStart.removeListener listener
+      @avInputStart tabWindow
+    Rtc.onAvcStart.addListener listener
+    chrome.tabs.create url: 'html/avc.html', active: false, pinned: false,
+
+  # Prompts the user for permission to use the A/V inputs.
+  avInputStart: (tabWindow) ->
     @log 'avInput called'
     media = { video: true, audio: false }
     callback = (stream) => @onAvInputStream stream
-    if navigator.getUserMedia
-      navigator.getUserMedia media, callback
-    if navigator.webkitGetUserMedia
-      navigator.webkitGetUserMedia media, callback
-    if navigator.mozGetUserMedia
-      navigator.mozGetUserMedia media, callback
+    if tabWindow.navigator.getUserMedia
+      tabWindow.navigator.getUserMedia media, callback
+    if tabWindow.navigator.webkitGetUserMedia
+      tabWindow.navigator.webkitGetUserMedia media, callback
+    if tabWindow.navigator.mozGetUserMedia
+      tabWindow.navigator.mozGetUserMedia media, callback
 
   # Called when the user's video input is provided to the application.
   onAvInputStream: (stream) ->
@@ -153,8 +163,6 @@ class Rtc
     try
       if @calling
         @rtc.createDataChannel 'i', reliable: false
-      else
-        @rtc.createDataChannel 'o', reliable: false
     catch rtcError
       @log ['rtcDataChannelError', rtcError]
 
@@ -190,8 +198,8 @@ class Rtc
   # Called when the remote side removed a stream from the connection.
   onRtcRemoveStream: (event) ->
     @log ['removeStream', event]
-    @onRemoteVideo.dispatch null
-    @rtcReset()
+    #@onRemoteVideo.dispatch null
+    #@rtcReset()
 
   # Called when ICE has a candidate-something. (incomplete spec)
   onIceCandidate: (event) ->
@@ -206,6 +214,8 @@ class Rtc
     @log ['rtcNegotiationNeeded', event]
     if @calling
       @rtc.createOffer @rtcOfferSuccessHandler, @rtcErrorHandler
+    else
+      @rtc.createAnswer @rtcAnswerSuccessHandler, @rtcErrorHandler
 
   # Called when something opens. (incomplete spec)
   onRtcOpen: (event) ->

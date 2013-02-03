@@ -35,9 +35,7 @@
     "idle",
     "notifications",
     "storage",
-    "unlimitedStorage",
-    "audioCapture",
-    "videoCapture"
+    "unlimitedStorage"
   ],
   "content_security_policy":
     "script-src 'self' 'unsafe-eval'; object-src 'self'"

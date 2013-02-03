@@ -107,6 +107,7 @@ class Nexus
             setTimeout writeOp, @writeCoalesceMs
           else
             @_rtcWrite[hostId] = false
+    @_rtcWrite[hostId] = true
     setTimeout writeOp, @writeCoalesceMs
 
   # Fires off the polling loop that emits host change events.
