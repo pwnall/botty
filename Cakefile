@@ -116,7 +116,7 @@ clean = (callback) ->
       if exists
         fs.remove 'release', removeReleaseCb
       else
-        callback() if removeReleaseCb
+        removeReleaseCb()
   fs.exists 'build', (exists) ->
     if exists
       fs.remove 'build', removeBuildCb
